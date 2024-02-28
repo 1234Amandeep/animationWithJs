@@ -1,1 +1,3 @@
-const hello = "say hello";
+function sayHello() {
+  console.log("Hello...");
+}
