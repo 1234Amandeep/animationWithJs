@@ -69,24 +69,49 @@ canvas.addEventListener("mousemove", (event) => {
   // drawFillCircle();
 });
 
+// colors pallete
+const colors = [
+  "red",
+  "blue",
+  "orange",
+  "purple",
+  "pink",
+  "yellow",
+  "white",
+  "grey",
+  "magenta",
+];
+
 // Particles blueprint
 class Particles {
   constructor() {
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
     this.size = Math.random() * 5 + 1;
-    this.speedX = Math.random() * 3 - 1.5;
-    this.speedY = Math.random() * 3 - 1.5;
+    this.speedX = Math.random() * 1 - 0.5;
+    this.speedY = Math.random() * 1 - 0.5;
   }
   update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
+    if (
+      this.x < 50 ||
+      this.x > canvas.width - 50 ||
+      this.y < 50 ||
+      this.y > canvas.height - 50
+    ) {
+      this.x = canvas.width / 2;
+      this.y = canvas.height / 2;
+    } else {
+      this.x += this.speedX;
+      this.y += this.speedY;
+    }
   }
   draw() {
-    ctx.fillStyle = "orange";
+    let index = Math.floor(Math.random() * 8 + 0);
+    let color = colors[index];
+    ctx.strokeStyle = color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 50, 0, 2 * Math.PI);
-    ctx.fill();
+    ctx.arc(this.x, this.y, 50 / 4, 0, 2 * Math.PI);
+    ctx.stroke();
   }
 }
 
