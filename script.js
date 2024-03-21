@@ -8,6 +8,8 @@ const ctx = canvas.getContext("2d");
 // Intial state of particlesArray
 const particlesArray = [];
 
+let hue = 0;
+
 // fn for drawing a filled Rectangle
 const drawFillRect = () => {
   ctx.fillStyle = "green";
@@ -59,83 +61,61 @@ const mouse = {
 canvas.addEventListener("click", (event) => {
   mouse.x = event.x;
   mouse.y = event.y;
-  // drawFillCircle();
+  for (let i = 0; i < 5; i++) {
+    particlesArray.push(new Particles());
+  }
 });
 
 // mouseMove interation
 canvas.addEventListener("mousemove", (event) => {
   mouse.x = event.x;
   mouse.y = event.y;
-  // drawFillCircle();
+  for (let i = 0; i < 5; i++) {
+    particlesArray.push(new Particles());
+  }
 });
-
-// colors pallete
-const colors = [
-  "red",
-  "blue",
-  "orange",
-  "purple",
-  "pink",
-  "yellow",
-  "white",
-  "grey",
-  "magenta",
-];
 
 // Particles blueprint
 class Particles {
   constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = Math.random() * canvas.height;
-    this.size = Math.random() * 5 + 1;
-    this.speedX = Math.random() * 1 - 0.5;
-    this.speedY = Math.random() * 1 - 0.5;
+    this.x = mouse.x;
+    this.y = mouse.y;
+    this.size = Math.random() * 15 + 1;
+    this.speedX = Math.random() * 3 - 1.5;
+    this.speedY = Math.random() * 3 - 1.5;
+    this.color = "hsl(" + hue + ", 100%, 50%)";
   }
   update() {
-    if (
-      this.x < 50 ||
-      this.x > canvas.width - 50 ||
-      this.y < 50 ||
-      this.y > canvas.height - 50
-    ) {
-      this.x = canvas.width / 2;
-      this.y = canvas.height / 2;
-    } else {
-      this.x += this.speedX;
-      this.y += this.speedY;
-    }
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if (this.size > 0.2) this.size -= 0.1;
   }
   draw() {
-    let index = Math.floor(Math.random() * 8 + 0);
-    let color = colors[index];
-    ctx.strokeStyle = color;
+    ctx.fillStyle = this.color;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 50 / 4, 0, 2 * Math.PI);
-    ctx.stroke();
+    ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+    ctx.fill();
   }
 }
-
-// initial setup for particles animation
-const init = () => {
-  for (let i = 0; i < 100; i++) {
-    particlesArray.push(new Particles());
-  }
-};
-
-init();
 
 const handleParticles = () => {
   for (let i = 0; i < particlesArray.length; i++) {
     particlesArray[i].update();
     particlesArray[i].draw();
+    if (particlesArray[i].size <= 0.3) {
+      particlesArray.splice(i, 1);
+      i--;
+    }
   }
 };
 
 // animations
 const animate = () => {
   // clearing canvas each pixels
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.01)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   handleParticles();
+  hue += 1;
   requestAnimationFrame(animate);
 };
 
