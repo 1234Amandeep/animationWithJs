@@ -80,7 +80,7 @@ class Particles {
   constructor() {
     this.x = mouse.x;
     this.y = mouse.y;
-    this.size = Math.random() * 15 + 1;
+    this.size = Math.random() * 10 + 1;
     this.speedX = Math.random() * 3 - 1.5;
     this.speedY = Math.random() * 3 - 1.5;
     this.color = "hsl(" + hue + ", 100%, 50%)";
@@ -102,6 +102,20 @@ const handleParticles = () => {
   for (let i = 0; i < particlesArray.length; i++) {
     particlesArray[i].update();
     particlesArray[i].draw();
+    for (let j = i; j < particlesArray.length; j++) {
+      const dx = particlesArray[i].x - particlesArray[j].x;
+      const dy = particlesArray[i].y - particlesArray[j].y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 100) {
+        ctx.beginPath();
+        ctx.lineWidth = 0.2;
+        ctx.strokeStyle = particlesArray[i].color;
+        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+        ctx.stroke();
+      }
+    }
     if (particlesArray[i].size <= 0.3) {
       particlesArray.splice(i, 1);
       i--;
@@ -112,8 +126,9 @@ const handleParticles = () => {
 // animations
 const animate = () => {
   // clearing canvas each pixels
-  ctx.fillStyle = "rgba(0, 0, 0, 0.01)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // ctx.fillStyle = "rgba(0, 0, 0, 0.01)";
+  // ctx.fillRect(0, 0, canvas.width, canvas.height);
   handleParticles();
   hue += 1;
   requestAnimationFrame(animate);
